@@ -1,0 +1,19 @@
+Resources:
+  AppSingleTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:custom.tableName}
+      AttributeDefinitions:
+        - AttributeName: primaryKey
+          AttributeType: S
+        - AttributeName: secondaryKey
+          AttributeType: S
+      KeySchema:
+        - AttributeName: primaryKey
+          KeyType: HASH
+        - AttributeName: secondaryKey
+          KeyType: RANGE
+      # Set the capacity based on the stage
+      ProvisionedThroughput:
+        ReadCapacityUnits: ${self:custom.tableThroughput}
+        WriteCapacityUnits: ${self:custom.tableThroughput}
