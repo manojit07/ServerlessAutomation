@@ -3,7 +3,7 @@ name: Upload CHANGELOG to S3
 on:
   push:
     branches:
-      - faeture/cicd
+      - feature/cicd
 
 jobs:
   deploy:
