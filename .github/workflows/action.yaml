@@ -1,0 +1,35 @@
+name: Upload CHANGELOG to S3
+
+on:
+  push:
+    branches:
+      - faeture/cicd
+
+jobs:
+  deploy:
+    name: Upload to Amazon S3
+    runs-on: ubuntu-latest
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Configure AWS credentials from Test account
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        role-to-assume: arn:aws:iam::773103429818:role/PopulateS3FormGitRepo
+        aws-region: us-east-1
+    - name: Copy files to the test website with the AWS CLI
+      run: |
+        aws s3 sync . s3://cicd-source-demo
+      
+# #    - name: Configure AWS credentials from Production account
+#       uses: aws-actions/configure-aws-credentials@v2
+#       with:
+#         role-to-assume: arn:aws:iam::222222222222:role/my-github-actions-role-prod
+#         aws-region: us-west-2
+#     - name: Copy files to the production website with the AWS CLI
+#       run: |
+#         aws s3 sync . s3://my-s3-prod-website-bucket
