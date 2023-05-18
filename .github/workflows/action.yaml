@@ -35,7 +35,7 @@ jobs:
         path: ${{ github.workspace }}/result.zip
     - name: Copy files to the test website with the AWS CLI
       run: | 
-        aws s3 sync api-source.zip s3://cicd-source-demo
+        aws s3 sync ./api-source.zip s3://cicd-source-demo
       
 # #    - name: Configure AWS credentials from Production account
 #       uses: aws-actions/configure-aws-credentials@v2
