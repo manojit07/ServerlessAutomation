@@ -14,7 +14,8 @@ jobs:
         with:
           files: api/
           dest: api-source.zip
-  
+      - run: | 
+            ls -a
   deploy:
     name: Upload to Amazon S3
     runs-on: ubuntu-latest
@@ -30,9 +31,7 @@ jobs:
       with:
         role-to-assume: arn:aws:iam::773103429818:role/PopulateS3FormGitRepo
         aws-region: ap-south-1
-    - name: ClistI
-      run: | 
-        ls -a
+    
     - name: Copy files to the test website with the AWS CLI
       run: | 
         aws s3 sync ./api-source.zip s3://cicd-source-demo
