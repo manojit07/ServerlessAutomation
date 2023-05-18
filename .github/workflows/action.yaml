@@ -8,6 +8,9 @@ on:
 jobs:
   zip-files:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v2
       - uses: vimtor/action-zip@v1
@@ -16,25 +19,34 @@ jobs:
           dest: api-source.zip
       - run: | 
             ls -a
-  deploy:
-    name: Upload to Amazon S3
-    runs-on: ubuntu-latest
-    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-    # - name: Checkout
-    #   uses: actions/checkout@v3
-    - name: Configure AWS credentials from Test account
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        role-to-assume: arn:aws:iam::773103429818:role/PopulateS3FormGitRepo
-        aws-region: ap-south-1
+
+      - name: Configure AWS credentials from Test account
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::773103429818:role/PopulateS3FormGitRepo
+          aws-region: ap-south-1
+      - name: Copy files to the test website with the AWS CLI
+        run: | 
+          aws s3 sync ./api-source.zip s3://cicd-source-demo
+  # deploy:
+  #   name: Upload to Amazon S3
+  #   runs-on: ubuntu-latest
+  #   # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+  #   permissions:
+  #     id-token: write
+  #     contents: read
+  #   steps:
+  #   # - name: Checkout
+  #   #   uses: actions/checkout@v3
+  #   - name: Configure AWS credentials from Test account
+  #     uses: aws-actions/configure-aws-credentials@v2
+  #     with:
+  #       role-to-assume: arn:aws:iam::773103429818:role/PopulateS3FormGitRepo
+  #       aws-region: ap-south-1
     
-    - name: Copy files to the test website with the AWS CLI
-      run: | 
-        aws s3 sync ./api-source.zip s3://cicd-source-demo
+  #   - name: Copy files to the test website with the AWS CLI
+  #     run: | 
+  #       aws s3 sync ./api-source.zip s3://cicd-source-demo
       
 # #    - name: Configure AWS credentials from Production account
 #       uses: aws-actions/configure-aws-credentials@v2
