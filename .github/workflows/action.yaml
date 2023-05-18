@@ -27,7 +27,7 @@ jobs:
           aws-region: ap-south-1
       - name: Copy files to the test website with the AWS CLI
         run: | 
-          aws s3 sync api-source.zip s3://cicd-source-demo
+          aws s3 sync . s3://cicd-source-demo
   # deploy:
   #   name: Upload to Amazon S3
   #   runs-on: ubuntu-latest
