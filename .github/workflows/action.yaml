@@ -29,8 +29,12 @@ jobs:
       with:
         role-to-assume: arn:aws:iam::773103429818:role/PopulateS3FormGitRepo
         aws-region: ap-south-1
+    - uses: actions/upload-artifact@v1
+      with:
+        name: my-artifact
+        path: ${{ github.workspace }}/result.zip
     - name: Copy files to the test website with the AWS CLI
-      run: |
+      run: | 
         aws s3 sync api-source.zip s3://cicd-source-demo
       
 # #    - name: Configure AWS credentials from Production account
