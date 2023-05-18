@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: vimtor/action-zip@v1
         with:
-          files: api/*
+          files: api/
           dest: api-source.zip
   deploy:
     name: Upload to Amazon S3
