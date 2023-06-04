@@ -3,7 +3,10 @@ frameworkVersion: ">3.0.0"
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs12.x  
+  iam:
+    role: arn:aws:iam::773103429818:role/satsang-demo-lambda
+
   	
   # deploymentBucket:
   #   # Name of an existing bucket to use (default: created by serverless)
