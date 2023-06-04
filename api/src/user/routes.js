@@ -5,7 +5,7 @@ const routes = express.Router({
 });
 
 routes.get('/', (req, res) => {
-    res.status(200).json({});
+    res.status(200).json({"key1": "sample value for test API"});
 });
 
 module.exports = {
