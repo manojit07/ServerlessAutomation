@@ -71,7 +71,7 @@ custom:
     - prod
   mysqlHost:
     local: localhost
-    dev: devdb.example.com
+    develop: devdb.example.com
     staging: ${ssm:/myapp/staging/mysql-host} #get from ssm
     prod: ${ssm:/myapp/prod/mysql-host} #get from ssm
   # mysqlHost:
