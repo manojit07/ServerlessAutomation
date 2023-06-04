@@ -162,8 +162,8 @@ functions:
 
 
 # Plugins
-plugins:
-  - serverless-stage-manager
+# plugins:
+#   - serverless-stage-manager
 
 
 # you can add CloudFormation resource templates here
