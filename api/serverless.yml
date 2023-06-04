@@ -69,11 +69,11 @@ custom:
     - develop
     - staging
     - prod
-    mysqlHost:
-      local: localhost
-      dev: devdb.example.com
-      staging: ${ssm:/myapp/staging/mysql-host} #get from ssm
-      prod: ${ssm:/myapp/prod/mysql-host} #get from ssm
+  mysqlHost:
+    local: localhost
+    dev: devdb.example.com
+    staging: ${ssm:/myapp/staging/mysql-host} #get from ssm
+    prod: ${ssm:/myapp/prod/mysql-host} #get from ssm
   # mysqlHost:
   #   local: localhost
   #   dev: devdb.example.com
