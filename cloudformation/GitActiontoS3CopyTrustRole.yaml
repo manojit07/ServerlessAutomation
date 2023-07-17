@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+
+  CodeBuildSourcefromGitRepoGITREPONAME:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: code-build-source-from-gitrepo-gitreponame
+    
+
+  AllowCopyTobuildSourceBucketOnlyPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          -
+            Sid: AllowCopyTobuildSourceBucketOnly
+            Effect: Allow
+            Action:
+              - 's3:*'
+              - 's3-object-lambda:*'
+            Resource: 
+              - !Join
+                - ''
+                - - 'arn:aws:s3:::'
+                  - !Ref CodeBuildSourcefromGitRepoGITREPONAME
+                  - /*
+  
+  AssumeRoleToCopySourceCodeFromGit:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: gitaction-to-s3-copy-trust-role
+      Description: "IAM role to allow copy codebase files from a specific project git actions to codebuild source bucket."
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: >-
+                arn:aws:iam::773103429818:oidc-provider/token.actions.githubusercontent.com
+            Action: 'sts:AssumeRoleWithWebIdentity'
+            Condition:
+              StringLike:
+                'token.actions.githubusercontent.com:sub': 'repo:manojit07/ServerlessAutomation:*'
+              'ForAllValues:StringEquals':
+                'token.actions.githubusercontent.com:iss': 'https://token.actions.githubusercontent.com'
+                'token.actions.githubusercontent.com:aud': sts.amazonaws.com
+
+      ManagedPolicyArns:
+        - !Ref AllowCopyTobuildSourceBucketOnlyPolicy
+
+  # MyS3BucketPolicy:
+  #   Type: AWS::S3::BucketPolicy
+  #   Properties:
+  #     Bucket: !Ref CodeBuildSourcefromGitRepoGITREPONAME
+  #     PolicyDocument:
+  #       Statement:
+  #         -
+  #           Action:
+  #             - s3:*
+  #           Effect: Allow
+  #           Resource:
+  #             - !Join
+  #               - ''
+  #               - - 'arn:aws:iam:::'
+  #                 - !Ref AssumeRoleToCopySourceCodeFromGit
+  #                 - /*
+  #           Principal:
+  #             AWS:
+  #               - '*'

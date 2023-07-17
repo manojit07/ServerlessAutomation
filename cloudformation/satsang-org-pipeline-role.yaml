@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+
+ 
+  StartSatsangOrgBackendPipelineExecutionPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          -
+            Sid: AllowPipelineExecution
+            Effect: Allow
+            Action:
+              - 'codepipeline:StartPipelineExecution'
+            Resource: - 'arn:aws:iam::773103429818:role/service-role/satsang*'
+  
+  StartSatsangOrgBackendPipelineExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: gitaction-to-s3-copy-trust-role
+      Description: "IAM role to allow copy codebase files from a specific project git actions to codebuild source bucket."
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: >-
+                arn:aws:iam::773103429818:oidc-provider/codepipeline.amazonaws.com
+            Action: 'sts:AssumeRoleWithWebIdentity'
+            Condition:
+              StringLike:
+                'token.actions.githubusercontent.com:sub': 'repo:manojit07/ServerlessAutomation:*'
+              'ForAllValues:StringEquals':
+                'token.actions.githubusercontent.com:iss': 'https://token.actions.githubusercontent.com'
+                'token.actions.githubusercontent.com:aud': sts.amazonaws.com
+
+      ManagedPolicyArns:
+        - !Ref AllowCopyTobuildSourceBucketOnlyPolicy
