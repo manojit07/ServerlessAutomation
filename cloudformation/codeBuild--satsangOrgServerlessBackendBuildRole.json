@@ -1,0 +1,164 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Resources": {
+       "Stsngorg-CodeBuild-Pipeline Role": {
+          "Type": "AMS::IAM::Role",
+          "Properties": {
+             "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                   {
+                      "Effect": "Allow",
+                      "Principal": {
+                         "Service": "codebuild.amazonaws.com"
+                      },
+                      "Action": "sts:AssumeRole"
+                   }
+                ]
+             }, 
+             "Path": "/",
+             "Policies": [
+                {
+                   "PolicyName": "code-build-basepolicy",
+                   "PolicyDocument": {
+                      "Version": "2012-10-17",
+                      "Statement": [
+                         {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                               {
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                     "arn:aws:logs: ap-south-1:773163429818:1og-group:/aws/codeb ",
+                                     "arn:aws:logs:ap-south-1:773103429818:log-group:/aws/codeb"
+                                  ],
+                                  "Action": [
+                                     "logs:CreateLogGroup",
+                                     "logs:CreateLogStream",
+                                     "logs:PutLogEvents"
+                                  ]
+                               },
+                               {
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                     "arn:aws:s3:::codepipeline-ap-south-1-**"
+                                  ],
+                                  "Action": [
+                                     "s3:PutObject",
+                                     "s3:GetObject",
+                                     "53:GetObjectVersion",
+                                     "s3:GetBucketAc1",
+                                     "s3:GetBucketLocation"
+                                  ]
+                               },
+                               {
+                                  "Effect": "Allow",
+                                  "Action": [
+                                     "codebuild:CreateReportGroup",
+                                     "codebuild:CreateReport",
+                                     "codebuild: UpdateReport",
+                                     "codebuild:BatchPutTestCases",
+                                     "codebuild:BatchPutCodeCoverages"
+                                  ],
+                                  "Resource": [
+                                     "arn:aws:codebuild: ap-south-1:773183429818:report-group/stsngorg-backend-build-demo-**"
+                                  ]
+                               },
+                               {
+                                  "sid": "Statement1",
+                                  "Effect": "Allow",
+                                  "Action": [
+                                     "Lambda:*"
+                                  ],
+                                  "Resource": [
+                                     "arn:aws:Lambda:ap-south-1:773103429818: function:stsngorg-backend-develop-app-api"
+                                  ]
+                               },
+                               {
+                                  "sid": "RoleSid1",
+                                  "Effect": "Allow",
+                                  "Action": [
+                                     "iam:GetRole"
+                                  ],
+                                  "Resource": [
+                                     "*"
+                                  ]
+                               },
+                               {
+                                  "sid": "RoleSid2",
+                                  "Effect": "Allow",
+                                  "Action": [
+                                     "iam:PassRole"
+                                  ],
+                                  "Resource": [
+                                     "arn:aws:iam::773103429818: role/stsngorg-demo-lambda"
+                                  ]
+                               }
+                            ]
+                         }
+                      ]
+                   }
+                }
+             ],
+             "ManagedPolicyArns": [
+                "arn:aws:iam:caws:policy/AmazonAPIGatewayAdministrator",
+                "arn:aws:iam:caws:policy/AmazonAPIGatewayInvokeFullAccess",
+                "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+                "arn:aws:iam:caws:policy/CloudWatchLogsFullAccess"
+             ],
+             "RoleName": "StangOrg-CodeBuild-Role"
+          }
+       },
+       "SatsangOrgCloudFormationPolicy": {
+          "Type": "AMS::IAM::ManagedPolicy",
+          "Properties": {
+             "Description": "Managed Policy to full cloud formation access to stsngorg- resources",
+             "ManagedPolicyName": "CloudFormationFullAccessForStsngOrg",
+             "Path": "/",
+             "PolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                   {
+                      "Effect": "Allow",
+                      "Action": [
+                         "cloudformation:*"
+                      ],
+                      "Resource": "arn:aws::ap-south-1:773103429818:stsngorg-*"
+                   }
+                ]
+             },
+             "Roles": [
+                {
+                   "Ref": "Stsngorg-CodeBuild-PipelineRole"
+                }
+             ]
+          }
+       },
+       "WriteToStateBucketPolicy": {
+          "Type": "AWS::IAM: :ManagedPolicy",
+          "Properties": {
+             "Description": "Managed Policy to full access to stack state management bucket",
+             "ManagedPolicyName": "S3FullAccessForStsngOrgBackendStackMnagement",
+             "Path": "/",
+             "PolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                   {
+                      "Effect": "Allow",
+                      "Action": [
+                         "s3:*",
+                         "s3-object-lambda:*"
+                      ],
+                      "Resource": "arn:aws:s3:ap-south-1:773103429818:stsngorg-serverless-stack-state-backend"
+                   }
+                ]
+             },
+             "Roles": [
+                {
+                   "Ref": "StsngOrg-CodeBuild-PipelineRole"
+                }
+             ]
+          }
+       }
+    }
+ }

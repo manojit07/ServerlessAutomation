@@ -62,6 +62,10 @@ provider:
 #     MYSQL_PASSWORD: ${self:custom.mysqlPassword.${self:provider.stage}}
 #     MYSQL_DATABASE: ${self:custom.mysqlDatabase.${self:provider.stage}}
 #     MYSQL_PORT: ${self:custom.mysqlPort.${self:provider.stage}}
+  
+  environment: 
+     MYSQL_PORT: ${self:custom.mysqlPort.${self:provider.stage}}
+
 
 # Custom Variables
 custom:
@@ -69,6 +73,7 @@ custom:
     - develop
     - staging
     - prod
+    - local
   # mysqlHost:
   #   local: localhost
   #   develop: devdb.example.com
@@ -99,6 +104,12 @@ custom:
   #   dev: '3306'
   #   staging: '3306'
   #   prod: '3306'
+
+  mysqlPort:
+    local: '8889'
+    dev: '3306'
+    staging: '3306'
+    prod: '3306'
 # you can add packaging information here
 #package:
 #  include:
@@ -162,8 +173,9 @@ functions:
 
 
 # Plugins
-# plugins:
-#   - serverless-stage-manager
+plugins:
+  - serverless-stage-manager
+  - serverless-offline
 
 
 # you can add CloudFormation resource templates here

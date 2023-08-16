@@ -37,4 +37,4 @@ Resources:
                 'token.actions.githubusercontent.com:aud': sts.amazonaws.com
 
       ManagedPolicyArns:
-        - !Ref AllowCopyTobuildSourceBucketOnlyPolicy
+        - !Ref StartSatsangOrgBackendPipelineExecutionPolicy
